@@ -139,3 +139,25 @@ class CELNode {
         return this
     }
 }
+
+class CircleEndLine {
+    root : CELNode = new CELNode(0)
+    curr : CELNode = this.root
+    dir : number = 1
+
+    draw(context : CanvasRenderingContext2D) {
+        this.root.draw(context)
+    }
+
+    update(cb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+        })
+    }
+
+    startUpdating(cb : Function) {
+        this.curr.startUpdating(cb)
+    }
+}
