@@ -24,6 +24,7 @@ class CircleEndLineStage {
         this.canvas.onmousedown = () => {
             this.cel.startUpdating(() => {
                 this.animator.start(() => {
+                    this.render()
                     this.cel.update(() => {
                         this.animator.stop()
                     })
@@ -70,7 +71,7 @@ class Animator {
     start(cb : Function) {
         if (!this.animated) {
             this.animated = true
-            this.interval = setInterval(cb, 50)
+            this.interval = setInterval(cb, 60)
         }
     }
 
@@ -104,16 +105,16 @@ class CELNode {
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h) / 60
         context.save()
-        context.translate(w/2, gap * this.i + gap)
+        context.translate(w/2, gap + this.i * gap)
         for (var j = 0; j < 2; j++) {
             const sf : number = 1 - 2 * j
             const sc : number = Math.min(0.5, Math.max(0, this.state.scale - 0.5 * j)) * 2
             context.save()
             context.scale(sf, 1)
-            context.translate(w/2 * sc, 0)
+            context.translate(w/2 * (1 -sc), 0)
             context.rotate(Math.PI * sc)
             context.beginPath()
-            for (var k = 180; k <= 360; k++) {
+            for (var k = 90; k <= 270; k++) {
                 const x : number = r * Math.cos(k * Math.PI/180)
                 const y : number = r * Math.sin(k * Math.PI/180)
                 if (k == 180) {
@@ -126,6 +127,9 @@ class CELNode {
             context.restore()
         }
         context.restore()
+        if (this.next) {
+            this.next.draw(context)
+        }
     }
 
     update(cb : Function) {
