@@ -4,6 +4,8 @@ const nodes : number = 5
 class CircleEndLineStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
+    cel : CircleEndLine = new CircleEndLine()
+    animator : Animator = new Animator()
 
     initCanvas() {
         this.canvas.width = w
@@ -15,11 +17,18 @@ class CircleEndLineStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.cel.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.cel.startUpdating(() => {
+                this.animator.start(() => {
+                    this.cel.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 
